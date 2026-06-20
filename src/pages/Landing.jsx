@@ -12,22 +12,17 @@ const Landing = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const activeAccess = sessionStorage.getItem('deccan_access');
-    if (activeAccess) {
-      navigate('/menu');
-      return;
-    }
-
-    const savedPhone = localStorage.getItem('pending_phone');
-    if (savedPhone) {
-      checkStatus(savedPhone, true); // Pass true to indicate initial check
-    }
-
+    // We NO LONGER auto-redirect approved users because they must ask permission EVERY TIME
     const checkAdmin = async () => {
       const { data: { session } } = await supabase?.auth.getSession();
       if (session) navigate('/admin-dashboard');
     };
     checkAdmin();
+
+    const savedPhone = localStorage.getItem('pending_phone');
+    if (savedPhone) {
+      checkStatus(savedPhone, true);
+    }
   }, [navigate]);
 
   const checkStatus = async (phoneNum, isInitial = false) => {
@@ -100,13 +95,6 @@ const Landing = () => {
     try {
       const { data: existing } = await supabase.from('access_requests').select('*').eq('phone_number', phone).maybeSingle();
       
-      if (existing?.status === 'approved') {
-        setStatus('approved');
-        sessionStorage.setItem('deccan_access', phone);
-        setTimeout(() => navigate('/menu'), 1000);
-        return;
-      }
-
       if (existing) {
         await supabase.from('access_requests').update({ 
           status: 'pending', 
