@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nizami Catering - Menu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "outline-variant": "#4f4634",
+                    "on-secondary": "#3e2e00",
+                    "on-error": "#690005",
+                    "on-primary-fixed": "#261a00",
+                    "on-background": "#ede1cb",
+                    "inverse-surface": "#ede1cb",
+                    "tertiary-fixed-dim": "#ffb688",
+                    "on-primary": "#402d00",
+                    "surface-dim": "#181306",
+                    "secondary-fixed-dim": "#f0c040",
+                    "surface-container-highest": "#3a3425",
+                    "inverse-on-surface": "#363021",
+                    "surface-tint": "#f6be39",
+                    "on-primary-fixed-variant": "#5c4300",
+                    "background": "#181306",
+                    "on-tertiary-fixed-variant": "#6b3a16",
+                    "surface-variant": "#3a3425",
+                    "primary-container": "#d4a017",
+                    "secondary": "#f0c040",
+                    "inverse-primary": "#795900",
+                    "surface-bright": "#3f3929",
+                    "on-tertiary": "#502402",
+                    "on-secondary-fixed": "#251a00",
+                    "error-container": "#93000a",
+                    "outline": "#9b8f7a",
+                    "on-surface": "#ede1cb",
+                    "secondary-fixed": "#ffdf97",
+                    "surface-container-low": "#201b0d",
+                    "on-secondary-fixed-variant": "#5a4400",
+                    "primary": "#f6be39",
+                    "tertiary-container": "#dd996d",
+                    "on-primary-container": "#503a00",
+                    "surface-container": "#241f11",
+                    "on-secondary-container": "#392a00",
+                    "on-tertiary-container": "#60310d",
+                    "surface-container-lowest": "#120e03",
+                    "surface": "#181306",
+                    "on-surface-variant": "#d3c5ae",
+                    "surface-container-high": "#2f291b",
+                    "tertiary": "#ffb688",
+                    "error": "#ffb4ab",
+                    "tertiary-fixed": "#ffdbc7",
+                    "on-error-container": "#ffdad6",
+                    "secondary-container": "#b88d00",
+                    "on-tertiary-fixed": "#311300",
+                    "primary-fixed-dim": "#f6be39",
+                    "primary-fixed": "#ffdfa0"
+            },
+            "borderRadius": {
+                    "DEFAULT": "1rem",
+                    "lg": "2rem",
+                    "xl": "3rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "max-container": "600px",
+                    "edge-margin": "24px",
+                    "stack-lg": "32px",
+                    "gutter": "16px",
+                    "stack-sm": "8px",
+                    "stack-md": "16px",
+                    "section-gap": "64px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": ["Playfair Display"],
+                    "body-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Playfair Display"],
+                    "display-lg": ["Playfair Display"],
+                    "headline-lg": ["Playfair Display"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": ["28px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "500"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .royal-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #4A2000, #D4A017, #4A2000, transparent);
+            position: relative;
+        }
+        .royal-divider::after {
+            content: '◆';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #D4A017;
+            font-size: 10px;
+            background: #181306;
+            padding: 0 8px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md dark">
+<!-- Top Navigation Anchor -->
+<header class="fixed top-0 w-full z-50 bg-background border-b border-primary-container/30 shadow-sm shadow-primary/10">
+<div class="flex justify-between items-center px-edge-margin h-16 max-w-max-container mx-auto">
+<div class="w-10"></div> <!-- Spacer for centering -->
+<div class="flex justify-center flex-1">
+<div class="h-10 flex items-center justify-center">https://lh3.googleusercontent.com/aida/AP1WRLumXiBXJqoOuU2U7DXDNbGD8KoH9vz2GoXO0dW9dbgUAPuh3MVWXtVURVZ2z-8dqnlELBREXDCWijjQkCewj5UUM_mjrLZFRsTJtc2qXDkmaybMmypbg-uHsjJdjhOPNJ31iJ2rjlhTXvzE1c518r_hZ0YDBgACCvIkpv0aXnS6Qw3vwCMo_bqtg6P5DdM-ffIEADHGBb5n2Gw8Klphq6CWUmmtOe2axG2HMObw1D8pYD8PmXvthapEe7M</div>
+</div>
+<div class="flex items-center text-primary active:scale-95 duration-200 cursor-pointer">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 max-w-max-container mx-auto px-edge-margin">
+<!-- Category Filter Section -->
+<section class="mb-stack-lg sticky top-16 bg-background pt-4 pb-2 z-40">
+<div class="flex overflow-x-auto hide-scrollbar gap-gutter pb-2">
+<button class="whitespace-nowrap font-label-sm text-label-sm text-primary border-b-2 border-primary pb-1 transition-all">All Items</button>
+<button class="whitespace-nowrap font-label-sm text-label-sm text-on-surface-variant hover:text-primary pb-1 transition-all">Biryani</button>
+<button class="whitespace-nowrap font-label-sm text-label-sm text-on-surface-variant hover:text-primary pb-1 transition-all">Starters</button>
+<button class="whitespace-nowrap font-label-sm text-label-sm text-on-surface-variant hover:text-primary pb-1 transition-all">Mains</button>
+<button class="whitespace-nowrap font-label-sm text-label-sm text-on-surface-variant hover:text-primary pb-1 transition-all">Desserts</button>
+<button class="whitespace-nowrap font-label-sm text-label-sm text-on-surface-variant hover:text-primary pb-1 transition-all">Drinks</button>
+</div>
+</section>
+<!-- Signature Section Heading -->
+<div class="mb-stack-lg">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary tracking-tight mb-2">Our Royal Menu</h1>
+<p class="font-body-md text-on-surface-variant leading-relaxed">Savor the authentic flavors crafted with heritage recipes from the kitchens of the Deccan.</p>
+</div>
+<div class="royal-divider mb-section-gap"></div>
+<!-- Dish Bento-inspired Grid (2-columns) -->
+<div class="grid grid-cols-2 gap-gutter">
+<!-- Dish Card 1 -->
+<div class="group bg-[#1A0800] border border-outline-variant rounded-none overflow-hidden active:scale-[0.98] transition-transform duration-200 cursor-pointer" onclick="window.location.href='#details'">
+<div class="aspect-square w-full relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A macro photography shot of authentic Hyderabadi Mutton Biryani, featuring long-grain basmati rice colored with saffron, tender pieces of meat, and garnished with fried onions and fresh mint. The lighting is warm and dramatic, highlighting the textures of the spices. Rich dark chocolate and gold palette to match the Nizami brand aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDOLHpo2tu7f1QFqa5Y6T6Ug2kIQWD2MmmdeFYDy8qD0cdDJEjFPBUM-kfRDdczxYdE9_k2N85wIVz5jr1HKdkZHEeoBzWkNFZsBZFpTUfSM40r3WM_m13bHMTT_LaGBFbtfJqMxa8kWuLC9dUTAbXGAB4vNnnfkVlhMuiFxmT2QHvG4vhi10bJiZ6YedJ3XmYuZcHjGqgxh_IuxN0y99eLrWfFA4E01gDj9C8I1qkJ1Ep4bpDTDhNlcM1txFO9QmSD6-R6nkZmUcZA"/>
+<div class="absolute top-2 right-2 bg-background/80 backdrop-blur-md px-2 py-1 rounded-sm border border-primary-container/20">
+<span class="text-[10px] font-label-sm text-primary uppercase tracking-widest">Must Try</span>
+</div>
+</div>
+<div class="p-stack-md flex flex-col justify-between h-32">
+<h3 class="font-headline-md text-headline-md-mobile text-on-surface leading-tight line-clamp-2">Nizami Mutton Biryani</h3>
+<div class="flex justify-between items-end">
+<span class="font-label-sm text-label-sm text-secondary">₹ 750</span>
+<span class="material-symbols-outlined text-primary text-lg" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Dish Card 2 -->
+<div class="group bg-[#1A0800] border border-outline-variant rounded-none overflow-hidden active:scale-[0.98] transition-transform duration-200 cursor-pointer" onclick="window.location.href='#details'">
+<div class="aspect-square w-full relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Exquisite plating of Shahi Tukda, a bread pudding dessert soaked in saffron-infused milk, topped with silver leaf (vark) and slivered pistachios. The dessert is served on a dark, artisanal plate. High-contrast lighting captures the creamy texture and the metallic sheen of the gold accents in the room. Elegant and regal atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEUVpEUVYQJ9n0oNNk_sV7ZldDDF2rUyNsoWjZMcRPhNhV5wfm4EcU-ltr_gKDyoRPo22-TabG5jzJ1URIhCqHBNTFCk6t69tvAIvnDz4oZgb4RFrbtPIomJ2KmIk9l2bLMm76fISRB61R9GonO3NBz2eMFi_TYVN7zhm6AzR7IWpePWXSrLX1JQyJDE7Xa1vsPqyn0gan5P9ONnPPUGG_p78cyWKwnpkmYQ6dmEg1tvDNckhNGiBRo71i64IoEe4dpP5f0cb07G-H"/>
+</div>
+<div class="p-stack-md flex flex-col justify-between h-32">
+<h3 class="font-headline-md text-headline-md-mobile text-on-surface leading-tight line-clamp-2">Shahi Tukda Aur Rabri</h3>
+<div class="flex justify-between items-end">
+<span class="font-label-sm text-label-sm text-secondary">₹ 350</span>
+<span class="material-symbols-outlined text-primary text-lg" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Dish Card 3 (Featured Style) -->
+<div class="col-span-2 group bg-[#1A0800] border border-primary-container/50 rounded-none overflow-hidden active:scale-[0.99] transition-transform duration-200 cursor-pointer" onclick="window.location.href='#details'">
+<div class="grid grid-cols-2">
+<div class="aspect-square w-full relative">
+<img class="w-full h-full object-cover" data-alt="A stunning display of Pathar ka Gosht, meat seared on a hot stone, served with mint chutney and thin roomali rotis. The steam is visible, catching the soft ambient gold lighting of a luxury catering event. The background is a deep, out-of-focus chocolate brown, emphasizing the succulent texture of the meat and the rustic elegance of the stone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAfp3vtU2H29nzsadkL6yZ79mye-8e61cMIbUSSDElCcRCYVxFwV8rp_HyU2xR01xs-6KoZpovzfRajytJ4OhWT24YPXPMZ3Mb6bwRN6gx3DBM1MPlcrvokoh6_7717z1ga5VSfA4SpXCZBPN73D_PDouThyFF14YUgM4y2hjHuAxAn5Guz_bO83pq6vgp7ZHU6a2UxXonhyS3kUkxzChebVuXDRPs-i_TZsK8mmTApoEuTpjTGhIjmhsuw8QWky1SZ5aQeu34nR08i"/>
+</div>
+<div class="p-stack-lg flex flex-col justify-center">
+<span class="text-[10px] font-label-sm text-secondary uppercase tracking-[0.2em] mb-2">Signature Dish</span>
+<h3 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-2">Pathar Ka Gosht</h3>
+<p class="font-body-md text-on-surface-variant text-sm mb-4 line-clamp-2">Succulent lamb marinated overnight and slow-cooked on a natural stone flame.</p>
+<span class="font-label-sm text-headline-md text-secondary">₹ 890</span>
+</div>
+</div>
+</div>
+<!-- Dish Card 4 (No Image Placeholder) -->
+<div class="group bg-[#1A0800] border border-outline-variant rounded-none overflow-hidden active:scale-[0.98] transition-transform duration-200 cursor-pointer" onclick="window.location.href='#details'">
+<div class="aspect-square w-full flex items-center justify-center bg-surface-container-low border-b border-outline-variant">
+<div class="flex flex-col items-center gap-2 opacity-40">
+<span class="material-symbols-outlined text-4xl text-primary" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-label-sm text-[10px] tracking-widest uppercase">Traditional Recipe</span>
+</div>
+</div>
+<div class="p-stack-md flex flex-col justify-between h-32">
+<h3 class="font-headline-md text-headline-md-mobile text-on-surface leading-tight line-clamp-2">Murgh Zeera Kebab</h3>
+<div class="flex justify-between items-end">
+<span class="font-label-sm text-label-sm text-secondary">₹ 550</span>
+<span class="material-symbols-outlined text-primary text-lg" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</div>
+<!-- Dish Card 5 -->
+<div class="group bg-[#1A0800] border border-outline-variant rounded-none overflow-hidden active:scale-[0.98] transition-transform duration-200 cursor-pointer" onclick="window.location.href='#details'">
+<div class="aspect-square w-full relative">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A refreshing glass of Saffron-infused Lassi served in a traditional clay cup, garnished with pistachios and rose petals. The lighting is soft and golden, highlighting the creamy yellow hue of the drink against a deep mahogany background. The aesthetic is ultra-premium, reflecting the heritage of the Nizams." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFeZjNUxkQjdy7CPeZ2Gv8IYZfyXSHQPQTUbHKWbWZc1xdavF55Twv5c9YocEWTxgVJNfnQScl2Na26x0epd24k6cNkmjTLj4yaXi99-gxAIScpPjqGpKOe1d_DZpIYDkpprguFX6kq3hDplPh3pKD0LTBVCWabWXOd_iAqnFaogI35JtQVVgyCvLGgw7syqNpuoUwObHSbE_hPN7Fsq_6CgpO8pp9eHIz0EKB2SDmM428wm7TOjEEZB1fJH9du2RNv423luCIYfQh"/>
+</div>
+<div class="p-stack-md flex flex-col justify-between h-32">
+<h3 class="font-headline-md text-headline-md-mobile text-on-surface leading-tight line-clamp-2">Zafrani Lassi Royale</h3>
+<div class="flex justify-between items-end">
+<span class="font-label-sm text-label-sm text-secondary">₹ 220</span>
+<span class="material-symbols-outlined text-primary text-lg" data-icon="arrow_forward">arrow_forward</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination/Load More Anchor -->
+<div class="mt-section-gap text-center">
+<button class="px-stack-lg py-stack-md rounded-full border border-primary text-primary font-label-sm text-label-sm uppercase tracking-widest hover:bg-primary/5 transition-colors">
+                Explore More Classics
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Shell -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface-container-low dark:bg-surface-container-low border-t border-outline-variant shadow-[0_-4px_12px_rgba(246,190,57,0.08)]">
+<div class="flex justify-around items-center h-20 px-edge-margin max-w-max-container mx-auto">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-sm text-label-sm mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold hover:bg-surface-variant/50 transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+<span class="font-label-sm text-label-sm mt-1">Bookings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="restaurant_menu">restaurant_menu</span>
+<span class="font-label-sm text-label-sm mt-1">Inventory</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-variant/50 transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-sm text-label-sm mt-1">Reports</span>
+</a>
+</div>
+</nav>
+<script>
+        // Micro-interaction: Active tab logic
+        const tabs = document.querySelectorAll('button[class*="whitespace-nowrap"]');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => {
+                    t.classList.remove('text-primary', 'border-b-2', 'border-primary');
+                    t.classList.add('text-on-surface-variant');
+                });
+                tab.classList.add('text-primary', 'border-b-2', 'border-primary');
+                tab.classList.remove('text-on-surface-variant');
+            });
+        });
+
+        // Simple scroll reveal for cards
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-4');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.group').forEach(card => {
+            card.classList.add('transition-all', 'duration-700', 'opacity-0', 'translate-y-4');
+            observer.observe(card);
+        });
+    </script>
+</body></html>
