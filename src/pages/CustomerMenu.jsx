@@ -75,9 +75,14 @@ const CustomerMenu = () => {
   };
 
   const handleSignOut = async () => {
+    const activePhone = sessionStorage.getItem('active_phone') || sessionStorage.getItem('deccan_access');
+    if (activePhone) {
+      await supabase.from('access_requests').delete().eq('phone_number', activePhone);
+    }
     await supabase.auth.signOut();
     sessionStorage.removeItem('deccan_access');
-    localStorage.removeItem('pending_phone'); // Reset the flow for next visit
+    sessionStorage.removeItem('active_phone');
+    localStorage.removeItem('pending_phone');
     navigate('/');
   };
 

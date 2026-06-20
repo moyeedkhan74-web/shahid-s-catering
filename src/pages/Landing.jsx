@@ -6,41 +6,50 @@ import { useNavigate } from 'react-router-dom';
 
 const Landing = () => {
   const navigate = useNavigate();
-  const [phone, setPhone] = useState(localStorage.getItem('pending_phone') || '');
+  const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const [status, setStatus] = useState('idle');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // We NO LONGER auto-redirect approved users because they must ask permission EVERY TIME
     const checkAdmin = async () => {
       const { data: { session } } = await supabase?.auth.getSession();
       if (session) navigate('/admin-dashboard');
     };
     checkAdmin();
 
-    const savedPhone = localStorage.getItem('pending_phone');
-    if (savedPhone) {
-      checkStatus(savedPhone, true);
-    }
+    // Auto-delete request when user leaves/closes the page
+    const cleanup = () => {
+      const savedPhone = sessionStorage.getItem('active_phone');
+      if (savedPhone) {
+        navigator.sendBeacon && fetch(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/access_requests?phone_number=eq.${savedPhone}`, {
+          method: 'DELETE',
+          headers: {
+            'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            'Content-Type': 'application/json'
+          },
+          keepalive: true
+        });
+        sessionStorage.removeItem('active_phone');
+      }
+    };
+    window.addEventListener('beforeunload', cleanup);
+    return () => window.removeEventListener('beforeunload', cleanup);
   }, [navigate]);
 
-  const checkStatus = async (phoneNum, isInitial = false) => {
+  const checkStatus = async (phoneNum) => {
     setLoading(true);
     const { data } = await supabase.from('access_requests').select('status').eq('phone_number', phoneNum).maybeSingle();
     if (data) {
       if (data.status === 'approved') {
         setStatus('approved');
         sessionStorage.setItem('deccan_access', phoneNum);
-        // Only auto-navigate if NOT the very first load of the page
-        if (!isInitial) {
-          setTimeout(() => navigate('/menu'), 1000);
-        }
+      } else if (data.status === 'rejected') {
+        setStatus('rejected');
       } else {
         setStatus('waiting');
       }
-    } else {
-      localStorage.removeItem('pending_phone');
     }
     setLoading(false);
   };
@@ -108,7 +117,8 @@ const Landing = () => {
           status: 'pending' 
         }]);
       }
-      localStorage.setItem('pending_phone', phone);
+      localStorage.removeItem('pending_phone');
+      sessionStorage.setItem('active_phone', phone);
       setStatus('waiting');
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
