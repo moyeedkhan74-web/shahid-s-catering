@@ -18,12 +18,22 @@ const DishDetails = () => {
 
   useEffect(() => {
     const checkAccess = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
       const hasAccess = sessionStorage.getItem('deccan_access');
+
+      // 1. If admin is logged in, they have full access
+      if (session) {
+        setupItem();
+        return;
+      }
+
+      // 2. If no admin session, check for customer deccan_access
       if (!hasAccess) {
         navigate('/');
         return;
       }
 
+      // 3. Verify customer permission status
       const { data, error } = await supabase.from('access_requests').select('status').eq('phone_number', hasAccess).maybeSingle();
       if (error || !data || data.status !== 'approved') {
         sessionStorage.removeItem('deccan_access');
@@ -31,6 +41,10 @@ const DishDetails = () => {
         return;
       }
 
+      setupItem();
+    };
+
+    const setupItem = () => {
       const cachedItem = menuCache.find(i => i.id === id);
       if (cachedItem) {
         setItem(cachedItem);
@@ -40,6 +54,7 @@ const DishDetails = () => {
         fetchItem();
       }
     };
+
     checkAccess();
   }, [id, navigate, menuCache]);
 
