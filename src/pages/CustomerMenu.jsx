@@ -144,7 +144,7 @@ const CustomerMenu = () => {
                 <div className="aspect-[4/3] bg-white flex items-center justify-center overflow-hidden relative">
                   <img 
                     src={item.image_url} 
-                    className={`w-full h-full object-contain transition-all duration-500 ${!item.is_available ? 'grayscale opacity-40' : ''}`} 
+                    className={`w-full h-full object-cover transition-all duration-500 ${!item.is_available ? 'grayscale opacity-40' : ''}`} 
                     alt={item.name} 
                     loading="lazy" 
                   />

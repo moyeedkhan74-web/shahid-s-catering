@@ -341,7 +341,7 @@ const AdminDashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {menuItems.map(item => (
               <div key={item.id} className="bg-white rounded-[2.5rem] border border-[#48401B] overflow-hidden shadow-sm flex flex-col">
-                <div className="h-48 relative overflow-hidden">
+                <div className="aspect-[4/3] relative overflow-hidden bg-white flex items-center justify-center">
                   <img src={item.image_url} className="w-full h-full object-cover" />
                   <div className={`absolute top-6 right-6 px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest border ${item.is_available ? 'bg-green-50 text-green-600 border-green-100' : 'bg-red-50 text-red-500 border-red-100'}`}>
                     {item.is_available ? 'Active' : 'Off'}

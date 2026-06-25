@@ -138,8 +138,8 @@ const DishDetails = () => {
         </div>
       </nav>
 
-      {/* FIXED IMAGE VIEW - NO ZOOM (using object-contain) */}
-      <div className="relative w-full aspect-square bg-[#EDE8D0] flex items-center justify-center overflow-hidden">
+      {/* FIXED IMAGE VIEW - 3:2 Aspect Ratio */}
+      <div className="relative w-full aspect-[3/2] bg-white flex items-center justify-center overflow-hidden border-b-2 border-[#48401B]">
         <AnimatePresence mode="wait">
           <motion.img 
             key={activeImage} 
@@ -147,7 +147,7 @@ const DishDetails = () => {
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }} 
             src={activeImage} 
-            className="w-full h-full object-contain" 
+            className="w-full h-full object-cover" 
           />
         </AnimatePresence>
         
