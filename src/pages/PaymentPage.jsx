@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Castle, Copy, CheckCircle2, QrCode, Phone, Mail } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
