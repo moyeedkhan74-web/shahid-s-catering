@@ -141,10 +141,10 @@ const CustomerMenu = () => {
           <AnimatePresence mode="popLayout">
             {filteredItems.map((item) => (
               <motion.div key={item.id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} onClick={() => navigate(`/menu/${item.id}`)} className="bg-white rounded-[2rem] overflow-hidden border-2 border-[#48401B] active:scale-[0.98] transition-all shadow-sm">
-                <div className="aspect-[4/3] bg-white flex items-center justify-center overflow-hidden relative">
+                <div className="aspect-[16/9] bg-[#EDE8D0]/20 flex items-center justify-center overflow-hidden relative">
                   <img 
                     src={item.image_url} 
-                    className={`w-full h-full object-cover transition-all duration-500 ${!item.is_available ? 'grayscale opacity-40' : ''}`} 
+                    className={`max-w-full max-h-full object-contain transition-all duration-500 ${!item.is_available ? 'grayscale opacity-40' : ''}`} 
                     alt={item.name} 
                     loading="lazy" 
                   />

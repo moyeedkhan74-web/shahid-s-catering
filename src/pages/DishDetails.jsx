@@ -17,24 +17,29 @@ const DishDetails = () => {
   const [isAdded, setIsAdded] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
     const checkAccess = async () => {
+      // 1. Get Session
       const { data: { session } } = await supabase.auth.getSession();
-      const hasAccess = sessionStorage.getItem('deccan_access');
+      if (!mounted) return;
 
-      // 1. If admin is logged in, they have full access
+      // 2. If admin session exists, they are always allowed
       if (session) {
         setupItem();
         return;
       }
 
-      // 2. If no admin session, check for customer deccan_access
+      // 3. Check for customer access
+      const hasAccess = sessionStorage.getItem('deccan_access');
       if (!hasAccess) {
         navigate('/');
         return;
       }
 
-      // 3. Verify customer permission status
+      // 4. Verify permission status
       const { data, error } = await supabase.from('access_requests').select('status').eq('phone_number', hasAccess).maybeSingle();
+      if (!mounted) return;
+
       if (error || !data || data.status !== 'approved') {
         sessionStorage.removeItem('deccan_access');
         navigate('/');
@@ -45,6 +50,7 @@ const DishDetails = () => {
     };
 
     const setupItem = () => {
+      if (!mounted) return;
       const cachedItem = menuCache.find(i => i.id === id);
       if (cachedItem) {
         setItem(cachedItem);
@@ -56,6 +62,7 @@ const DishDetails = () => {
     };
 
     checkAccess();
+    return () => { mounted = false; };
   }, [id, navigate, menuCache]);
 
   const fetchItem = async () => {
@@ -138,8 +145,8 @@ const DishDetails = () => {
         </div>
       </nav>
 
-      {/* FIXED IMAGE VIEW - 3:2 Aspect Ratio */}
-      <div className="relative w-full aspect-[3/2] bg-white flex items-center justify-center overflow-hidden border-b-2 border-[#48401B]">
+      {/* FIXED IMAGE VIEW - 16:9 Aspect Ratio with Contain */}
+      <div className="relative w-full aspect-[16/9] bg-[#EDE8D0]/30 flex items-center justify-center overflow-hidden border-b-2 border-[#48401B]">
         <AnimatePresence mode="wait">
           <motion.img 
             key={activeImage} 
@@ -147,7 +154,7 @@ const DishDetails = () => {
             animate={{ opacity: 1 }} 
             exit={{ opacity: 0 }} 
             src={activeImage} 
-            className="w-full h-full object-cover" 
+            className="max-w-full max-h-full object-contain shadow-2xl" 
           />
         </AnimatePresence>
         
