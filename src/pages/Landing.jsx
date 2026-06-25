@@ -45,6 +45,7 @@ const Landing = () => {
       if (data.status === 'approved') {
         setStatus('approved');
         sessionStorage.setItem('deccan_access', phoneNum);
+        sessionStorage.setItem('deccan_name', data.guest_name || '');
       } else if (data.status === 'rejected') {
         setStatus('rejected');
       } else {
@@ -67,6 +68,7 @@ const Landing = () => {
           if (p.new.status === 'approved') {
             setStatus('approved');
             sessionStorage.setItem('deccan_access', phone);
+            sessionStorage.setItem('deccan_name', p.new.guest_name || '');
             localStorage.removeItem('pending_phone');
             // Auto-navigate after celebration when coming from 'waiting'
             setTimeout(() => navigate('/menu'), 2500);
@@ -82,6 +84,7 @@ const Landing = () => {
         if (data?.status === 'approved') {
           setStatus('approved');
           sessionStorage.setItem('deccan_access', phone);
+          sessionStorage.setItem('deccan_name', data.guest_name || '');
           localStorage.removeItem('pending_phone');
           clearInterval(interval);
           setTimeout(() => navigate('/menu'), 2500);

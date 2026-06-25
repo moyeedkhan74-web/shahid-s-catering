@@ -30,6 +30,7 @@ const PaymentPage = () => {
     setIsSubmitting(true);
     
     try {
+      // 1. Send Order Confirmation Email to Customer
       const response = await fetch('/api/send-confirmation', {
         method: 'POST',
         headers: {
@@ -52,12 +53,31 @@ const PaymentPage = () => {
         throw new Error(errorData.error || 'Failed to send confirmation email');
       }
 
+      // 2. Send Admin Notification (Non-blocking)
+      const customerName = sessionStorage.getItem('deccan_name') || 'Guest Customer';
+      const customerPhone = sessionStorage.getItem('deccan_access') || 'Not provided';
+
+      fetch('/api/send-order-notification', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customerName,
+          customerPhone,
+          totalAmount: cartTotal.toFixed(2),
+          items: Object.values(cartItems).map(item => ({
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price
+          }))
+        }),
+      }).catch(err => console.error('Admin notification failed:', err));
+
       setIsSuccess(true);
       clearCart();
     } catch (err) {
       console.error('Submit Error:', err);
-      // Even if email fails, we might want to show success UI but warn the user locally
-      // But per requirements, we should integrate it.
       alert('Note: Order logged, but email confirmation failed. Please keep your Order Ref #.');
       setIsSuccess(true);
       clearCart();
