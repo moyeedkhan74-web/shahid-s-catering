@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Castle, Clock, Share2, Heart, ShieldAlert } from 'lucide-react';
+import { ArrowLeft, Castle, Clock, Share2, Heart, ShieldAlert, Plus, Minus, ShoppingCart } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../context/CartContext';
 
@@ -9,10 +9,12 @@ const DishDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [item, setItem] = useState(null);
-  const { menuCache } = useCart();
+  const { menuCache, addToCart } = useCart();
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState(null);
   const [liked, setLiked] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [isAdded, setIsAdded] = useState(false);
 
   useEffect(() => {
     const checkAccess = async () => {
@@ -73,6 +75,13 @@ const DishDetails = () => {
     }
   };
 
+  const handleAddToCart = () => {
+    if (!item.is_available) return;
+    addToCart(item, quantity);
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 2000);
+  };
+
   if (loading) return (
     <div className="min-h-screen bg-[#EDE8D0] flex items-center justify-center">
       <Castle className="w-8 h-8 text-[#B8860B] animate-pulse" />
@@ -89,7 +98,7 @@ const DishDetails = () => {
   const gallery = [item.image_url, ...(item.gallery_urls || [])].filter(url => url && (url.startsWith('http') || url.startsWith('data:image')));
 
   return (
-    <div className="min-h-screen bg-[#EDE8D0] text-[#2C1E0F] pb-20 font-sans">
+    <div className="min-h-screen bg-[#EDE8D0] text-[#2C1E0F] pb-32 font-sans">
       <nav className="fixed top-0 left-0 right-0 z-50 px-4 py-4 flex justify-between items-center bg-[#F5F5DC]/80 backdrop-blur-md border-b border-[#F5EFE8]">
         <button onClick={() => navigate('/menu')} className="w-10 h-10 bg-white/90 text-[#2C1E0F] rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-all border border-[#EDE8D0]">
           <ArrowLeft className="w-5 h-5" />
@@ -147,34 +156,54 @@ const DishDetails = () => {
           <p className="text-base text-[#73695F] leading-relaxed font-medium">{item.description}</p>
         </div>
 
-        <div className="bg-white rounded-[2rem] p-8 border border-[#48401B]">
-          <div className="text-center mb-8">
-            <p className="text-[8px] font-black text-[#C8BAA8] uppercase tracking-widest mb-1">Price</p>
-            <h4 className="text-4xl font-black text-[#B8860B] tracking-tighter">${item.price}</h4>
+        <div className="bg-white rounded-[3rem] p-10 border-4 border-[#48401B] shadow-2xl relative">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <p className="text-[8px] font-black text-[#C8BAA8] uppercase tracking-widest mb-1">Price</p>
+              <h4 className="text-4xl font-black text-[#B8860B] tracking-tighter">${item.price}</h4>
+            </div>
+            
+            <div className="flex items-center bg-[#F7F3EE] rounded-2xl p-1 border-2 border-[#48401B]/10">
+              <button 
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="w-10 h-10 flex items-center justify-center text-[#2C1E0F] hover:bg-[#B8860B] hover:text-white rounded-xl transition-all"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+              <span className="w-12 text-center font-black text-sm">{quantity}</span>
+              <button 
+                onClick={() => setQuantity(quantity + 1)}
+                className="w-10 h-10 flex items-center justify-center text-[#2C1E0F] hover:bg-[#B8860B] hover:text-white rounded-xl transition-all"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
-          <div className="space-y-8">
-            <div className="grid grid-cols-2 gap-3">
-               <div className="p-4 rounded-xl bg-white border border-[#F5EFE8] text-center">
-                  <p className="text-[8px] font-black text-[#C8BAA8] uppercase tracking-widest mb-1">Status</p>
-                  <p className={`text-[9px] font-black uppercase ${item.is_available ? 'text-green-600' : 'text-red-500'}`}>
-                    {item.is_available ? 'Available' : 'Sold Out'}
-                  </p>
-               </div>
-               <div className="p-4 rounded-xl bg-white border border-[#F5EFE8] text-center">
-                  <p className="text-[8px] font-black text-[#C8BAA8] uppercase tracking-widest mb-1">Timing</p>
-                  <p className="text-[9px] font-black text-[#2C1E0F] uppercase">24HR Notice</p>
-               </div>
-            </div>
-
+          <div className="space-y-4">
             <button 
-              onClick={() => {
-                alert(`Inquiry sent for ${item.name}! Our team will contact you shortly.`);
-              }}
-              className="w-full py-5 bg-[#2C1E0F] text-[#B8860B] font-black text-[10px] uppercase tracking-[0.3em] rounded-xl active:scale-95 transition-all shadow-lg hover:bg-[#B8860B] hover:text-white"
+              disabled={!item.is_available}
+              onClick={handleAddToCart}
+              className={`w-full py-6 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] flex items-center justify-center gap-3 transition-all shadow-xl active:scale-95 ${
+                !item.is_available 
+                ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                : isAdded 
+                  ? 'bg-green-600 text-white' 
+                  : 'bg-[#2C1E0F] text-[#B8860B] hover:bg-[#B8860B] hover:text-white'
+              }`}
             >
-              Book Catering
+              {isAdded ? (
+                <>Added Successfully</>
+              ) : (
+                <>Add to Cart <ShoppingCart className="w-4 h-4" /></>
+              )}
             </button>
+            
+            {!item.is_available && (
+              <p className="text-center text-[9px] font-bold text-red-500 uppercase tracking-widest animate-pulse">
+                Currently Unavailable
+              </p>
+            )}
           </div>
         </div>
       </main>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Castle, Clock, LogOut, LayoutDashboard } from 'lucide-react';
+import { Search, Castle, Clock, LogOut, LayoutDashboard, ShoppingBag } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { useCart } from '../context/CartContext';
 
@@ -11,7 +11,7 @@ const CustomerMenu = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [menuItems, setMenuItems] = useState([]);
-  const { menuCache, setMenuCache, lastFetch, setLastFetch } = useCart();
+  const { menuCache, setMenuCache, lastFetch, setLastFetch, cartCount } = useCart();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -19,7 +19,6 @@ const CustomerMenu = () => {
     const hasAccess = sessionStorage.getItem('deccan_access');
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      console.log('CustomerMenu checkUser session:', !!session);
       setIsAdmin(!!session);
       
       if (session) {
@@ -32,18 +31,14 @@ const CustomerMenu = () => {
         return;
       }
 
-      console.log('CustomerMenu hasAccess:', hasAccess);
       if (!hasAccess) {
-        console.log('No access key found, redirecting to Landing');
         navigate('/');
         return;
       }
 
       // Verify permission in real-time
       const { data, error } = await supabase.from('access_requests').select('status').eq('phone_number', hasAccess).maybeSingle();
-      console.log('CustomerMenu verification data:', data, 'error:', error);
       if (error || !data || data.status !== 'approved') {
-        console.log('Invalid or unapproved access, redirecting to Landing');
         sessionStorage.removeItem('deccan_access');
         navigate('/');
       } else {
@@ -162,7 +157,9 @@ const CustomerMenu = () => {
                   )}
                 </div>
                 <div className="p-6">
-                  <h3 className="text-xl font-black uppercase text-[#2C1E0F] mb-4">{item.name}</h3>
+                  <h3 className="text-xl font-black uppercase text-[#2C1E0F] mb-1">{item.name}</h3>
+                  <p className="text-[10px] text-[#73695F] line-clamp-2 font-medium mb-4 leading-relaxed">{item.description}</p>
+                  
                   <div className="flex items-center justify-between pt-4 border-t border-[#EDE8D0]">
                     <div>
                       <p className="text-[8px] font-black text-[#C8BAA8] uppercase mb-1">Price</p>
@@ -176,8 +173,21 @@ const CustomerMenu = () => {
           </AnimatePresence>
         </div>
 
+        {/* Floating Cart Button */}
+        {cartCount > 0 && (
+          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] w-full max-w-md px-6">
+             <button 
+               onClick={() => navigate('/cart')}
+               className="w-full bg-[#2C1E0F] text-[#B8860B] py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(44,30,15,0.4)] flex items-center justify-center gap-4 border-2 border-[#B8860B]/20 active:scale-95 transition-all"
+             >
+                <ShoppingBag className="w-4 h-4" />
+                View Cart ({cartCount} {cartCount === 1 ? 'Item' : 'Items'})
+             </button>
+          </div>
+        )}
+
         {isAdmin && (
-           <div className="fixed bottom-6 right-6 z-50">
+           <div className={`fixed ${cartCount > 0 ? 'bottom-28' : 'bottom-6'} right-6 z-50`}>
               <button onClick={() => navigate('/admin-dashboard')} className="w-14 h-14 bg-[#2C1E0F] text-[#B8860B] rounded-2xl shadow-2xl flex items-center justify-center border-2 border-white"><LayoutDashboard className="w-5 h-5" /></button>
            </div>
         )}

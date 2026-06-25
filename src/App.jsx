@@ -10,6 +10,8 @@ const Login = lazy(() => import('./pages/Login'))
 const CustomerMenu = lazy(() => import('./pages/CustomerMenu'))
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
 const DishDetails = lazy(() => import('./pages/DishDetails'))
+const CartPage = lazy(() => import('./pages/CartPage'))
+const PaymentPage = lazy(() => import('./pages/PaymentPage'))
 
 const Loader = () => (
   <div className="min-h-screen bg-[#EDE8D0] flex flex-col items-center justify-center gap-4">
@@ -27,6 +29,8 @@ function AnimatedRoutes() {
         <Route path="/login" element={<PageWrapper><Login /></PageWrapper>} />
         <Route path="/menu" element={<PageWrapper><CustomerMenu /></PageWrapper>} />
         <Route path="/menu/:id" element={<PageWrapper><DishDetails /></PageWrapper>} />
+        <Route path="/cart" element={<PageWrapper><CartPage /></PageWrapper>} />
+        <Route path="/payment" element={<PageWrapper><PaymentPage /></PageWrapper>} />
         <Route path="/admin-dashboard" element={<PageWrapper><AdminDashboard /></PageWrapper>} />
       </Routes>
     </AnimatePresence>

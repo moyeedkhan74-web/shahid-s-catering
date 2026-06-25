@@ -176,23 +176,46 @@ const AdminDashboard = () => {
     setShowAddModal(true);
   };
 
-  const handleImageUpload = (e, type = 'main', index = null) => {
+  const compressImage = (file, maxWidth = 1000, quality = 0.7) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        const img = new Image();
+        img.src = e.target.result;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+          if (width > maxWidth) {
+            height = (maxWidth / width) * height;
+            width = maxWidth;
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+      };
+    });
+  };
+
+  const handleImageUpload = async (e, type = 'main', index = null) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) return alert('File too large (max 2MB)');
+      if (file.size > 10 * 1024 * 1024) return alert('File too large (max 10MB)');
       
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        if (type === 'main') {
-          setNewItem({ ...newItem, image_url: reader.result });
-        } else {
-          const newGallery = [...newItem.gallery_urls];
-          if (newGallery.length >= 4) return alert('Max 5 photos total (1 Main + 4 Gallery)');
-          newGallery.push(reader.result);
-          setNewItem({ ...newItem, gallery_urls: newGallery });
-        }
-      };
-      reader.readAsDataURL(file);
+      const compressedData = await compressImage(file);
+      
+      if (type === 'main') {
+        setNewItem({ ...newItem, image_url: compressedData });
+      } else {
+        const newGallery = [...newItem.gallery_urls];
+        if (newGallery.length >= 4) return alert('Max 5 photos total (1 Main + 4 Gallery)');
+        newGallery.push(compressedData);
+        setNewItem({ ...newItem, gallery_urls: newGallery });
+      }
     }
   };
 
