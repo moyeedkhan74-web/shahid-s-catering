@@ -30,17 +30,22 @@ const PaymentPage = () => {
     setIsSubmitting(true);
     
     try {
-      // 1. Send Order Confirmation Email to Customer
-      const response = await fetch('/api/send-confirmation', {
+      // Send Order Request (One call for both Admin and Customer emails)
+      const customerName = sessionStorage.getItem('deccan_name') || 'Guest Customer';
+      const customerPhone = sessionStorage.getItem('deccan_access') || 'Not provided';
+
+      const response = await fetch('/api/process-order', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email,
+          customerName,
+          customerPhone,
           orderRef,
+          customerEmail: email,
           totalAmount: cartTotal.toFixed(2),
-          orderDetails: Object.values(cartItems).map(item => ({
+          items: Object.values(cartItems).map(item => ({
             name: item.name,
             quantity: item.quantity,
             price: item.price
@@ -50,35 +55,14 @@ const PaymentPage = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to send confirmation email');
+        throw new Error(errorData.error || 'Failed to process order emails');
       }
-
-      // 2. Send Admin Notification (Non-blocking)
-      const customerName = sessionStorage.getItem('deccan_name') || 'Guest Customer';
-      const customerPhone = sessionStorage.getItem('deccan_access') || 'Not provided';
-
-      fetch('/api/send-order-notification', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          customerName,
-          customerPhone,
-          totalAmount: cartTotal.toFixed(2),
-          items: Object.values(cartItems).map(item => ({
-            name: item.name,
-            quantity: item.quantity,
-            price: item.price
-          }))
-        }),
-      }).catch(err => console.error('Admin notification failed:', err));
 
       setIsSuccess(true);
       clearCart();
     } catch (err) {
       console.error('Submit Error:', err);
-      alert('Note: Order logged, but email confirmation failed. Please keep your Order Ref #.');
+      alert('ERROR: ' + err.message + '\n\nIf you are testing locally, make sure you are running "vercel dev" or have a backend server.');
       setIsSuccess(true);
       clearCart();
     } finally {
