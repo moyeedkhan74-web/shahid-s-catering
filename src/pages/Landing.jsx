@@ -122,6 +122,7 @@ const Landing = () => {
       }
       localStorage.removeItem('pending_phone');
       sessionStorage.setItem('active_phone', phone);
+      sessionStorage.setItem('deccan_name', name);
       setStatus('waiting');
     } catch (err) { console.error(err); }
     finally { setLoading(false); }

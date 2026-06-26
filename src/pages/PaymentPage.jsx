@@ -31,8 +31,8 @@ const PaymentPage = () => {
     
     try {
       // Send Order Request (One call for both Admin and Customer emails)
-      const customerName = sessionStorage.getItem('deccan_name') || 'Guest Customer';
-      const customerPhone = sessionStorage.getItem('deccan_access') || 'Not provided';
+      const customerName = sessionStorage.getItem('deccan_name') || 'Valued Customer';
+      const customerPhone = sessionStorage.getItem('deccan_access') || sessionStorage.getItem('active_phone') || 'Not provided';
 
       const response = await fetch('/api/process-order', {
         method: 'POST',
