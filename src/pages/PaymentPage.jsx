@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Castle, Copy, CheckCircle2, QrCode, Phone, Mail } from 'lucide-react';
+import { ArrowLeft, Castle, Copy, CheckCircle2, QrCode, Phone, Mail, User } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
 const PaymentPage = () => {
@@ -9,6 +9,7 @@ const PaymentPage = () => {
   const { cartTotal, clearCart, cartItems } = useCart();
   const [copied, setCopied] = useState(false);
   const [orderRef] = useState(() => Math.random().toString(36).substring(2, 9).toUpperCase());
+  const [customerName, setCustomerName] = useState(() => sessionStorage.getItem('deccan_name') || '');
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -25,13 +26,14 @@ const PaymentPage = () => {
 
   const handleOrderSubmit = async (e) => {
     e.preventDefault();
+    if (!customerName.trim()) return alert('Please enter your name.');
     if (!email) return alert('Please enter your email for confirmation.');
     
     setIsSubmitting(true);
     
     try {
       // Send Order Request (One call for both Admin and Customer emails)
-      const customerName = sessionStorage.getItem('deccan_name') || 'Valued Customer';
+      const finalName = customerName.trim() || 'Valued Customer';
       const customerPhone = sessionStorage.getItem('deccan_access') || sessionStorage.getItem('active_phone') || 'Not provided';
 
       const response = await fetch('/api/process-order', {
@@ -40,7 +42,7 @@ const PaymentPage = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          customerName,
+          customerName: finalName,
           customerPhone,
           orderRef,
           customerEmail: email,
@@ -165,21 +167,34 @@ const PaymentPage = () => {
 
         <div className="bg-white rounded-[2.5rem] p-10 border-2 border-[#48401B] shadow-lg">
            <form onSubmit={handleOrderSubmit} className="space-y-6">
-              <div className="space-y-2">
-                 <h4 className="text-sm font-black uppercase tracking-tighter">Confirmation Email</h4>
-                 <p className="text-[9px] font-medium text-[#73695F] leading-tight">Enter your email to receive order details and confirmation once payment is verified.</p>
-                 <div className="relative mt-4">
-                    <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C8BAA8]" />
-                    <input 
-                      type="email" 
-                      required 
-                      placeholder="YOUR@EMAIL.COM" 
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-[#F7F3EE] p-5 pl-12 rounded-2xl text-xs font-bold outline-none border border-transparent focus:border-[#B8860B]/30 transition-all placeholder:text-[#C8BAA8]"
-                    />
-                 </div>
-              </div>
+               <div className="space-y-5">
+                  <h4 className="text-sm font-black uppercase tracking-tighter">Your Details</h4>
+                  <p className="text-[9px] font-medium text-[#73695F] leading-tight">Confirm your name and email to receive order confirmation once payment is verified.</p>
+                  <div className="space-y-3">
+                    <div className="relative">
+                       <User className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C8BAA8]" />
+                       <input 
+                         type="text" 
+                         required 
+                         placeholder="YOUR FULL NAME" 
+                         value={customerName}
+                         onChange={(e) => setCustomerName(e.target.value)}
+                         className="w-full bg-[#F7F3EE] p-5 pl-12 rounded-2xl text-xs font-bold outline-none border border-transparent focus:border-[#B8860B]/30 transition-all placeholder:text-[#C8BAA8]"
+                       />
+                    </div>
+                    <div className="relative">
+                       <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#C8BAA8]" />
+                       <input 
+                         type="email" 
+                         required 
+                         placeholder="YOUR@EMAIL.COM" 
+                         value={email}
+                         onChange={(e) => setEmail(e.target.value)}
+                         className="w-full bg-[#F7F3EE] p-5 pl-12 rounded-2xl text-xs font-bold outline-none border border-transparent focus:border-[#B8860B]/30 transition-all placeholder:text-[#C8BAA8]"
+                       />
+                    </div>
+                  </div>
+               </div>
 
               <button 
                 type="submit"

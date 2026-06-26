@@ -126,14 +126,33 @@ const CustomerMenu = () => {
       </header>
 
       <main className="max-w-md mx-auto px-4 pt-10 pb-32">
-        <div className="mb-8 pl-2">
-          <h2 className="text-4xl font-black uppercase tracking-tighter">Menu</h2>
-          <span className="text-[10px] font-black text-[#B8860B] uppercase tracking-widest">Heritage · Est. 2026</span>
+        <div className="mb-10 pl-2 relative">
+          <motion.div 
+            initial={{ width: 0 }} 
+            animate={{ width: '40px' }} 
+            className="h-1 bg-[#B8860B] mb-4" 
+          />
+          <h2 className="text-5xl font-black uppercase tracking-tighter leading-none mb-2 bg-gradient-to-br from-[#2C1E0F] to-[#73695F] bg-clip-text text-transparent">Culinary<br/>Selections</h2>
+          <div className="flex items-center gap-3 mt-4">
+            <span className="text-[9px] font-black text-[#B8860B] uppercase tracking-[0.4em]">Heritage Collection</span>
+            <div className="w-1 h-1 bg-[#C8BAA8] rounded-full" />
+            <span className="text-[9px] font-black text-[#73695F] uppercase tracking-[0.4em]">Est. 2026</span>
+          </div>
         </div>
 
-        <div className="flex gap-3 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4 sticky top-[73px] z-40 bg-[#EDE8D0]/90 py-4">
+        <div className="flex gap-3 overflow-x-auto pb-6 scrollbar-hide -mx-4 px-4 sticky top-[72px] z-40 bg-[#EDE8D0]/95 backdrop-blur-md py-4 border-b border-[#F5EFE8]/50">
           {categories.map(cat => (
-            <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-6 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest border ${activeCategory === cat ? 'bg-[#2C1E0F] text-[#B8860B] border-[#2C1E0F]' : 'bg-white border-[#F5EFE8] text-[#73695F]'}`}>{cat}</button>
+            <button 
+              key={cat} 
+              onClick={() => setActiveCategory(cat)} 
+              className={`px-7 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all duration-300 border-2 ${
+                activeCategory === cat 
+                ? 'bg-[#2C1E0F] text-[#B8860B] border-[#2C1E0F] shadow-xl shadow-[#2C1E0F]/10 scale-105' 
+                : 'bg-white border-transparent text-[#73695F] hover:border-[#EDE8D0]'
+              }`}
+            >
+              {cat}
+            </button>
           ))}
         </div>
 
@@ -144,13 +163,18 @@ const CustomerMenu = () => {
                 <div className="aspect-[16/9] bg-[#EDE8D0]/20 flex items-center justify-center overflow-hidden relative">
                   <img 
                     src={item.image_url} 
-                    className={`max-w-full max-h-full object-contain transition-all duration-500 ${!item.is_available ? 'grayscale opacity-40' : ''}`} 
+                    className={`max-w-full max-h-full object-contain transition-all duration-700 group-hover:scale-110 ${!item.is_available ? 'grayscale opacity-40' : ''}`} 
                     alt={item.name} 
                     loading="lazy" 
                   />
+                  {item.is_available && Number(item.price) > 20 && (
+                    <div className="absolute top-6 right-6 bg-[#B8860B] text-white px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-widest shadow-xl border border-white/20">
+                       Highly Recommended
+                    </div>
+                  )}
                   {!item.is_available && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-[#EDE8D0]/20">
-                      <span className="bg-[#2C1E0F] text-[#B8860B] px-6 py-2 rounded-full text-[9px] font-black uppercase border-2 border-[#B8860B] shadow-2xl">
+                    <div className="absolute inset-0 flex items-center justify-center bg-[#2C1E0F]/10 backdrop-blur-sm">
+                      <span className="bg-[#2C1E0F] text-[#B8860B] px-8 py-3 rounded-2xl text-[10px] font-black uppercase border-2 border-[#B8860B] shadow-2xl tracking-widest">
                         Sold Out
                       </span>
                     </div>
