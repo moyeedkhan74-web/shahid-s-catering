@@ -10,9 +10,14 @@ export default async function handler(req, res) {
   }
 
   const BREVO_API_KEY = process.env.BREVO_API_KEY;
-  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'deccancaterings1@gmail.com';
+  const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'deccancaterings1@gmail.com'; // Must be verified in Brevo as a Sender
   const SUPABASE_URL = process.env.SUPABASE_URL;
   const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
+
+  if (!BREVO_API_KEY) {
+    console.error('CRITICAL: BREVO_API_KEY is missing from environment variables.');
+    return res.status(500).json({ error: 'Mail Configuration Error' });
+  }
 
   const luxuryStyle = `
     background-color: #FDFBF7;
@@ -238,7 +243,20 @@ export default async function handler(req, res) {
     if (!adminRes.ok || !customerRes.ok) {
        const adminErr = !adminRes.ok ? await adminRes.json() : null;
        const customerErr = !customerRes.ok ? await customerRes.json() : null;
-       return res.status(400).json({ error: 'Mail Error', details: { adminErr, customerErr } });
+       
+       console.error('Mail Delivery Failed:', {
+         adminStatus: adminRes.status,
+         adminErr,
+         customerStatus: customerRes.status,
+         customerErr
+       });
+
+       // Return more descriptive error message to frontend
+       const detailedError = (adminErr?.message || customerErr?.message || 'Brevo rejection');
+       return res.status(400).json({ 
+         error: `Mail Error: ${detailedError}`, 
+         details: { adminErr, customerErr } 
+       });
     }
 
     return res.status(200).json({ success: true });
