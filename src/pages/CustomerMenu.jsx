@@ -16,9 +16,15 @@ const CustomerMenu = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
+
     const hasAccess = sessionStorage.getItem('deccan_access');
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data } = await supabase.auth.getSession();
+      const session = data?.session;
       setIsAdmin(!!session);
       
       if (session) {
@@ -37,8 +43,8 @@ const CustomerMenu = () => {
       }
 
       // Verify permission in real-time
-      const { data, error } = await supabase.from('access_requests').select('status').eq('phone_number', hasAccess).maybeSingle();
-      if (error || !data || data.status !== 'approved') {
+      const { data: accessData, error } = await supabase.from('access_requests').select('status').eq('phone_number', hasAccess).maybeSingle();
+      if (error || !accessData || accessData.status !== 'approved') {
         sessionStorage.removeItem('deccan_access');
         navigate('/');
       } else {
@@ -51,11 +57,13 @@ const CustomerMenu = () => {
       }
     };
     checkUser();
+
     const { data: authListener } = supabase.auth.onAuthStateChange((_e, session) => setIsAdmin(!!session));
     const menuChannel = supabase.channel('menu_changes').on('postgres_changes', { event: '*', schema: 'public', table: 'menu_items' }, () => fetchMenu()).subscribe();
+
     return () => {
-      authListener.subscription.unsubscribe();
-      supabase.removeChannel(menuChannel);
+      if (authListener?.subscription) authListener.subscription.unsubscribe();
+      if (menuChannel) supabase.removeChannel(menuChannel);
     };
   }, [navigate]);
 

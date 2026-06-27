@@ -13,8 +13,9 @@ const Landing = () => {
 
   useEffect(() => {
     const checkAdmin = async () => {
-      const { data: { session } } = await supabase?.auth.getSession();
-      if (session) navigate('/admin-dashboard');
+      if (!supabase) return;
+      const { data } = await supabase.auth.getSession();
+      if (data?.session) navigate('/admin-dashboard');
     };
     checkAdmin();
 

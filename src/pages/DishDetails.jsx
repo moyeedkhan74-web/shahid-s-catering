@@ -19,8 +19,14 @@ const DishDetails = () => {
   useEffect(() => {
     let mounted = true;
     const checkAccess = async () => {
+      if (!supabase) {
+        navigate('/');
+        return;
+      }
+
       // 1. Get Session
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data } = await supabase.auth.getSession();
+      const session = data?.session;
       if (!mounted) return;
 
       // 2. If admin session exists, they are always allowed
@@ -37,10 +43,10 @@ const DishDetails = () => {
       }
 
       // 4. Verify permission status
-      const { data, error } = await supabase.from('access_requests').select('status').eq('phone_number', hasAccess).maybeSingle();
+      const { data: accessData, error } = await supabase.from('access_requests').select('status').eq('phone_number', hasAccess).maybeSingle();
       if (!mounted) return;
 
-      if (error || !data || data.status !== 'approved') {
+      if (error || !accessData || accessData.status !== 'approved') {
         sessionStorage.removeItem('deccan_access');
         navigate('/');
         return;

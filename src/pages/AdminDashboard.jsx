@@ -40,9 +40,14 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
+    if (!supabase) {
+      navigate('/login');
+      return;
+    }
+
     const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) navigate('/login');
+      const { data } = await supabase.auth.getSession();
+      if (!data?.session) navigate('/login');
     };
     checkUser();
 
@@ -84,7 +89,7 @@ const AdminDashboard = () => {
       });
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) supabase.removeChannel(channel);
     };
   }, []);
 
