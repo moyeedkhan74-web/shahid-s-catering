@@ -4,14 +4,26 @@ import { CartProvider } from './context/CartContext'
 import { Castle } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 
-// Lazy Loading
-const Landing = lazy(() => import('./pages/Landing'))
-const Login = lazy(() => import('./pages/Login'))
-const CustomerMenu = lazy(() => import('./pages/CustomerMenu'))
-const AdminDashboard = lazy(() => import('./pages/AdminDashboard'))
-const DishDetails = lazy(() => import('./pages/DishDetails'))
-const CartPage = lazy(() => import('./pages/CartPage'))
-const PaymentPage = lazy(() => import('./pages/PaymentPage'))
+// Robust Lazy Loading with Auto-Reload on Chunk Failure
+const lazyRetry = (componentImport) => {
+  return lazy(async () => {
+    try {
+      return await componentImport();
+    } catch (error) {
+      console.error("Chunk load failed, forcing reload:", error);
+      window.location.reload();
+      return { default: () => null };
+    }
+  });
+};
+
+const Landing = lazyRetry(() => import('./pages/Landing'))
+const Login = lazyRetry(() => import('./pages/Login'))
+const CustomerMenu = lazyRetry(() => import('./pages/CustomerMenu'))
+const AdminDashboard = lazyRetry(() => import('./pages/AdminDashboard'))
+const DishDetails = lazyRetry(() => import('./pages/DishDetails'))
+const CartPage = lazyRetry(() => import('./pages/CartPage'))
+const PaymentPage = lazyRetry(() => import('./pages/PaymentPage'))
 
 const Loader = () => (
   <div className="min-h-screen bg-[#EDE8D0] flex flex-col items-center justify-center gap-4">
