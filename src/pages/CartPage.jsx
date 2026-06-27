@@ -66,8 +66,8 @@ const CartPage = () => {
                 
                 <div className="flex-grow flex flex-col justify-between py-1">
                   <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-sm font-black uppercase tracking-tight leading-none mb-1">{item.name}</h3>
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-sm font-black uppercase tracking-tight leading-none mb-1 truncate">{item.name}</h3>
                       <p className="text-[8px] font-medium text-[#73695F] line-clamp-1 uppercase tracking-widest">{item.description}</p>
                     </div>
                     <button onClick={() => removeFromCartEntirely(item.id)} className="text-red-400 hover:text-red-600 transition-colors">
@@ -118,7 +118,7 @@ const CartPage = () => {
 
           <button 
             onClick={() => navigate('/payment')}
-            className="w-full py-6 bg-[#2C1E0F] text-[#B8860B] font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl active:scale-95 transition-all shadow-xl hover:bg-[#B8860B] hover:text-white flex items-center justify-center gap-3"
+            className="w-full py-6 bg-[#2C1E0F] text-[#B8860B] font-black text-[10px] uppercase tracking-[0.25em] rounded-2xl active:scale-95 transition-all shadow-xl hover:bg-[#B8860B] hover:text-white flex items-center justify-center gap-3"
           >
             Checkout Now <CreditCard className="w-4 h-4" />
           </button>

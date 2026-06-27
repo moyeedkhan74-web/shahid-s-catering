@@ -64,9 +64,8 @@ const PaymentPage = () => {
       clearCart();
     } catch (err) {
       console.error('Submit Error:', err);
-      alert('ERROR: ' + err.message + '\n\nIf you are testing locally, make sure you are running "vercel dev" or have a backend server.');
-      setIsSuccess(true);
-      clearCart();
+      alert('ERROR: ' + err.message + '\n\nIf the error persists, please contact support or try again later.');
+      // Do NOT clear cart or show success on actual error
     } finally {
       setIsSubmitting(false);
     }
@@ -134,17 +133,17 @@ const PaymentPage = () => {
               <div className="p-6 bg-white/5 rounded-2xl border border-white/10">
                  <p className="text-[8px] font-black uppercase tracking-widest text-[#B8860B] mb-4">Pay via Zelle to:</p>
                  
-                 <div className="flex items-center justify-between group">
-                    <div className="flex items-center gap-4">
-                       <div className="w-10 h-10 bg-[#B8860B] rounded-xl flex items-center justify-center">
+                  <div className="flex items-center justify-between group gap-3 sm:gap-4">
+                    <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                       <div className="w-10 h-10 bg-[#B8860B] rounded-xl flex items-center justify-center shrink-0">
                           <Mail className="w-5 h-5 text-white" />
                        </div>
-                       <div>
-                          <p className="text-[7px] font-black uppercase tracking-widest text-white/40">Zelle ID / Email</p>
-                          <p className="font-bold text-sm">{ZELLE_CONTACT}</p>
+                       <div className="min-w-0 flex-1">
+                          <p className="text-[7px] font-black uppercase tracking-widest text-white/40 leading-none mb-1">Zelle ID / Email</p>
+                          <p className="font-bold text-[10px] xs:text-xs sm:text-sm select-all break-all leading-tight">{ZELLE_CONTACT}</p>
                        </div>
                     </div>
-                    <button onClick={() => handleCopy(ZELLE_CONTACT)} className="p-3 bg-white/10 rounded-xl hover:bg-[#B8860B] transition-all">
+                    <button onClick={() => handleCopy(ZELLE_CONTACT)} className="p-3 bg-white/10 rounded-xl hover:bg-[#B8860B] transition-all shrink-0">
                        <Copy className="w-4 h-4" />
                     </button>
                  </div>
@@ -199,7 +198,7 @@ const PaymentPage = () => {
               <button 
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-6 bg-[#2C1E0F] text-[#B8860B] font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl active:scale-95 transition-all shadow-xl hover:bg-[#B8860B] hover:text-white disabled:opacity-50"
+                className="w-full py-6 bg-[#2C1E0F] text-[#B8860B] font-black text-[10px] uppercase tracking-[0.25em] rounded-2xl active:scale-95 transition-all shadow-xl hover:bg-[#B8860B] hover:text-white disabled:opacity-50"
               >
                 {isSubmitting ? 'Processing...' : 'Confirm Order Paid'}
               </button>

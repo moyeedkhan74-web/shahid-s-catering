@@ -26,27 +26,29 @@ export default async function handler(req, res) {
   try {
     // 0. Save Order to Supabase (if configured)
     if (SUPABASE_URL && SUPABASE_SERVICE_KEY) {
-      try {
-        await fetch(`${SUPABASE_URL}/rest/v1/orders`, {
-          method: 'POST',
-          headers: {
-            'apikey': SUPABASE_SERVICE_KEY,
-            'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-            'Content-Type': 'application/json',
-            'Prefer': 'return=minimal'
-          },
-          body: JSON.stringify({
-            order_ref: orderRef,
-            customer_name: displayName,
-            customer_phone: customerPhone || null,
-            customer_email: customerEmail,
-            items: items,
-            total_amount: Number(totalAmount),
-            status: 'pending'
-          })
-        });
-      } catch (dbErr) {
-        console.error('Order save error (non-blocking):', dbErr.message);
+      const dbRes = await fetch(`${SUPABASE_URL.replace(/\/$/, '')}/rest/v1/orders`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({
+          order_ref: orderRef,
+          customer_name: displayName,
+          customer_phone: customerPhone || null,
+          customer_email: customerEmail,
+          items: items,
+          total_amount: Number(totalAmount),
+          status: 'pending'
+        })
+      });
+
+      if (!dbRes.ok) {
+        const errorText = await dbRes.text();
+        console.error('Supabase Save Error:', errorText);
+        throw new Error('Database Error: Failed to save order to ledger. Please check SQL migration and Vercel Env Vars.');
       }
     }
 

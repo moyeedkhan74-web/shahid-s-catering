@@ -5,7 +5,7 @@ import {
   Settings, LogOut, Check, X, Trash2, Castle, 
   Menu as MenuIcon, Filter, Clock, ChevronRight,
   Upload, Camera, Image as ImageIcon, Globe,
-  Package, CheckCircle2
+  Package, CheckCircle2, AlertCircle
 } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -23,6 +23,8 @@ const AdminDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [orderFilter, setOrderFilter] = useState('all');
   const [orderSearch, setOrderSearch] = useState('');
+  const [orderFetchError, setOrderFetchError] = useState(null);
+  const [isOrdersLoading, setIsOrdersLoading] = useState(false);
   const [stats, setStats] = useState({ revenue: 0, activeOrders: 0, pendingRequests: 0 });
 
   const [showAddModal, setShowAddModal] = useState(false);
@@ -38,6 +40,12 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) navigate('/login');
+    };
+    checkUser();
+
     fetchAccessRequests();
     fetchMenuItems();
     fetchOrders();
@@ -143,11 +151,29 @@ const AdminDashboard = () => {
   };
 
   const fetchOrders = async () => {
+    setIsOrdersLoading(true);
     try {
+      setOrderFetchError(null);
       const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
-      if (error) { console.log('Orders table may not exist yet:', error.message); return; }
+      if (error) { 
+        console.error('Orders fetch error:', error.message);
+        // If table doesn't exist, Supabase returns error code 404 or a specific message
+        if (error.message.includes('not found') || error.code === '42P01') {
+           setOrderFetchError('The "orders" table does not exist in your database. Please run the SQL migration script.');
+        } else if (error.code === '42501') {
+           setOrderFetchError('Permission denied. Please check your Supabase RLS policies.');
+        } else {
+           setOrderFetchError(error.message);
+        }
+        return; 
+      }
       if (data) setOrders(data);
-    } catch (err) { console.error('Orders fetch error:', err); }
+    } catch (err) { 
+      console.error('Orders fetch catch logic:', err); 
+      setOrderFetchError('System connectivity issue. Check your internet or Supabase configuration.');
+    } finally {
+      setIsOrdersLoading(false);
+    }
   };
 
   const handleUpdateOrderStatus = async (id, newStatus) => {
@@ -552,7 +578,41 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            {filteredOrders.length === 0 && (
+            {orderFetchError && (
+              <div className="p-16 text-center bg-red-50 border-2 border-red-100 rounded-[3rem]">
+                <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <AlertCircle className="w-8 h-8 text-red-500" />
+                </div>
+                <h3 className="text-red-900 text-lg font-black uppercase tracking-tighter mb-2">Service Interrupted</h3>
+                <p className="text-red-700/70 text-[10px] font-bold max-w-xs mx-auto mb-8 uppercase tracking-widest leading-relaxed">
+                  {orderFetchError}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button 
+                    onClick={() => navigate('/login')}
+                    className="px-8 py-4 bg-white border border-red-200 text-red-600 rounded-2xl text-[9px] font-black uppercase tracking-widest"
+                  >
+                    Re-Authenticate
+                  </button>
+                  <button 
+                    onClick={() => fetchOrders()}
+                    className="px-8 py-4 bg-red-500 text-white rounded-2xl text-[9px] font-black uppercase tracking-widest shadow-xl shadow-red-500/20"
+                  >
+                    Retry Connection
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {isOrdersLoading && !orderFetchError && (
+              <div className="space-y-4">
+                {[1,2,3].map(i => (
+                  <div key={i} className="h-40 bg-white/50 animate-pulse rounded-[2rem] border border-[#F5EFE8]" />
+                ))}
+              </div>
+            )}
+
+            {!isOrdersLoading && !orderFetchError && filteredOrders.length === 0 && (
               <div className="p-20 text-center border-4 border-dashed border-[#F5EFE8] rounded-[3rem]">
                 <Package className="w-10 h-10 text-[#C8BAA8] mx-auto mb-4" />
                 <p className="text-[#C8BAA8] text-sm font-black uppercase tracking-widest">{orderFilter !== 'all' ? `No ${orderFilter} orders` : 'No orders yet'}</p>
@@ -585,7 +645,7 @@ const AdminDashboard = () => {
                       <p className="text-[7px] font-black text-[#B8860B] uppercase tracking-widest mb-1">Phone</p>
                       <p className="font-bold text-sm">{order.customer_phone || 'N/A'}</p>
                     </div>
-                    <div className="bg-[#F7F3EE] rounded-xl p-4">
+                    <div className="bg-[#F7F3EE] rounded-xl p-4 min-w-0">
                       <p className="text-[7px] font-black text-[#B8860B] uppercase tracking-widest mb-1">Email</p>
                       <p className="font-bold text-xs truncate">{order.customer_email}</p>
                     </div>
@@ -596,9 +656,9 @@ const AdminDashboard = () => {
                     <div className="space-y-1">
                       {(order.items || []).map((item, i) => (
                         <div key={i} className="flex justify-between items-center py-2.5 border-b border-[#F5F5F5] last:border-0">
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-xs">{item.name}</span>
-                            <span className="text-[10px] text-white bg-[#2C1E0F] px-2 py-0.5 rounded-md font-black">×{item.quantity}</span>
+                          <div className="flex items-center gap-2 min-w-0 flex-1">
+                            <span className="font-bold text-xs truncate">{item.name}</span>
+                            <span className="text-[10px] text-white bg-[#2C1E0F] px-2 py-0.5 rounded-md font-black shrink-0">×{item.quantity}</span>
                           </div>
                           <span className="font-black text-xs">${(Number(item.price) * item.quantity).toFixed(2)}</span>
                         </div>
