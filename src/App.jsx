@@ -5,25 +5,39 @@ import { Castle } from 'lucide-react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 // Robust Lazy Loading with Auto-Reload on Chunk Failure
-const lazyRetry = (componentImport) => {
+const lazyRetry = (componentImport, name) => {
   return lazy(async () => {
+    const pageHasAlreadyForceReloaded = window.sessionStorage.getItem(
+      `force-reload-${name}`
+    );
+
     try {
-      return await componentImport();
+      const component = await componentImport();
+      window.sessionStorage.removeItem(`force-reload-${name}`);
+      return component;
     } catch (error) {
-      console.error("Chunk load failed, forcing reload:", error);
-      window.location.reload();
-      return { default: () => null };
+      if (!pageHasAlreadyForceReloaded) {
+        // First failure: flag and reload
+        window.sessionStorage.setItem(`force-reload-${name}`, "true");
+        console.warn(`Chunk load failed for ${name}, forcing reload...`);
+        window.location.reload();
+        return { default: () => null };
+      }
+
+      // Second failure: actually an error (e.g. offline)
+      console.error(`Chunk load failed twice for ${name}:`, error);
+      throw error;
     }
   });
 };
 
-const Landing = lazyRetry(() => import('./pages/Landing'))
-const Login = lazyRetry(() => import('./pages/Login'))
-const CustomerMenu = lazyRetry(() => import('./pages/CustomerMenu'))
-const AdminDashboard = lazyRetry(() => import('./pages/AdminDashboard'))
-const DishDetails = lazyRetry(() => import('./pages/DishDetails'))
-const CartPage = lazyRetry(() => import('./pages/CartPage'))
-const PaymentPage = lazyRetry(() => import('./pages/PaymentPage'))
+const Landing = lazyRetry(() => import('./pages/Landing'), 'Landing')
+const Login = lazyRetry(() => import('./pages/Login'), 'Login')
+const CustomerMenu = lazyRetry(() => import('./pages/CustomerMenu'), 'CustomerMenu')
+const AdminDashboard = lazyRetry(() => import('./pages/AdminDashboard'), 'AdminDashboard')
+const DishDetails = lazyRetry(() => import('./pages/DishDetails'), 'DishDetails')
+const CartPage = lazyRetry(() => import('./pages/CartPage'), 'CartPage')
+const PaymentPage = lazyRetry(() => import('./pages/PaymentPage'), 'PaymentPage')
 
 const Loader = () => (
   <div className="min-h-screen bg-[#EDE8D0] flex flex-col items-center justify-center gap-4">
