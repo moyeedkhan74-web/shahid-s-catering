@@ -12,13 +12,6 @@ const Landing = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const checkAdmin = async () => {
-      if (!supabase) return;
-      const { data } = await supabase.auth.getSession();
-      if (data?.session) navigate('/admin-dashboard');
-    };
-    checkAdmin();
-
     // Auto-delete request when user leaves/closes the page
     const cleanup = () => {
       const savedPhone = sessionStorage.getItem('active_phone');

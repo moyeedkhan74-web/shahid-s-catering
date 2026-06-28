@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Shield, Mail, Lock, AlertCircle, ArrowLeft, Castle } from 'lucide-react';
@@ -10,6 +10,15 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!supabase) return;
+    const checkUser = async () => {
+      const { data } = await supabase.auth.getSession();
+      if (data?.session) navigate('/admin-dashboard');
+    };
+    checkUser();
+  }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();

@@ -1,0 +1,104 @@
+categories:
+  lightweight:
+    label: "Lightweight / fast tasks"
+    provider: groq
+    model: "llama-3.3-70b-versatile"
+    model_display_name: "Groq (Llama 3.3 70B)"
+    api_key_env: "GROQ_API_KEY"
+    is_default: true
+    quota:
+      limit: 1000
+      period: day
+    keywords:
+      - "check page load"
+      - "quick bug fix"
+      - "bug fix"
+      - "css tweak"
+      - "css"
+      - "simple html"
+      - "html structure"
+      - "periodic check"
+      - "small fix"
+      - "typo"
+      - "lint"
+
+  content:
+    label: "Content + copy"
+    provider: mistral
+    model: "mistral-large-latest"
+    model_display_name: "Mistral"
+    api_key_env: "MISTRAL_API_KEY"
+    is_default: false
+    quota:
+      limit: 1000000000
+      period: month
+      unit: tokens
+    keywords:
+      - "page copy"
+      - "copywriting"
+      - "error message"
+      - "readme"
+      - "documentation"
+      - "docs"
+      - "blog post"
+      - "marketing copy"
+      - "landing page text"
+      - "tagline"
+
+  coding:
+    label: "Heavy coding"
+    provider: deepseek
+    model: "deepseek-chat"
+    model_display_name: "DeepSeek V3"
+    api_key_env: "DEEPSEEK_API_KEY"
+    is_default: false
+    quota:
+      limit: 5000000
+      period: signup_total
+      unit: tokens
+    keywords:
+      - "write component"
+      - "component"
+      - "api integration"
+      - "backend route"
+      - "endpoint"
+      - "database query"
+      - "sql"
+      - "unit test"
+      - "write a function"
+      - "refactor"
+      - "implement"
+
+  reasoning:
+    label: "Complex reasoning"
+    provider: groq
+    model: "llama-3.3-70b-versatile"
+    model_display_name: "Groq (Llama 3.3 70B)"
+    api_key_env: "GROQ_API_KEY"
+    is_default: false
+    quota:
+      limit: 1000
+      period: day
+    keywords:
+      - "system architecture"
+      - "architecture"
+      - "complex logic"
+      - "auth flow"
+      - "seo strategy"
+      - "hard debug"
+      - "stubborn bug"
+      - "design a plan"
+      - "deep reasoning"
+
+trigger_phrases:
+  - "route this"
+  - "smart route"
+  - "pathey"
+
+escalation:
+  fast_fallback:
+    provider: groq
+    model: "llama-3.3-70b-versatile"
+    model_display_name: "Groq (Llama 3.3 70B)"
+    api_key_env: "GROQ_API_KEY"
+  fallback_category: reasoning

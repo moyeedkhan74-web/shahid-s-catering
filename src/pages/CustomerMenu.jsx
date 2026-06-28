@@ -28,9 +28,11 @@ const CustomerMenu = () => {
       setIsAdmin(!!session);
       
       if (session) {
-        if (menuCache.length > 0 && (Date.now() - lastFetch < 300000)) {
+        if (menuCache.length > 0) {
           setMenuItems(menuCache);
           setLoading(false);
+          // Revalidate in background to fetch fresh/real-time updates
+          fetchMenu();
         } else {
           fetchMenu();
         }
@@ -48,9 +50,11 @@ const CustomerMenu = () => {
         sessionStorage.removeItem('deccan_access');
         navigate('/');
       } else {
-        if (menuCache.length > 0 && (Date.now() - lastFetch < 300000)) { 
+        if (menuCache.length > 0) { 
           setMenuItems(menuCache);
           setLoading(false);
+          // Revalidate in background
+          fetchMenu();
         } else {
           fetchMenu();
         }
@@ -58,10 +62,16 @@ const CustomerMenu = () => {
     };
     checkUser();
 
+    // Fallback polling for true real-time updates every 8 seconds
+    const pollInterval = setInterval(() => {
+      fetchMenu();
+    }, 8000);
+
     const { data: authListener } = supabase.auth.onAuthStateChange((_e, session) => setIsAdmin(!!session));
     const menuChannel = supabase.channel('menu_changes').on('postgres_changes', { event: '*', schema: 'public', table: 'menu_items' }, () => fetchMenu()).subscribe();
 
     return () => {
+      clearInterval(pollInterval);
       if (authListener?.subscription) authListener.subscription.unsubscribe();
       if (menuChannel) supabase.removeChannel(menuChannel);
     };
