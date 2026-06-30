@@ -106,8 +106,8 @@ const DishDetails = () => {
   const handleAddToCart = () => {
     if (!item.is_available) return;
     addToCart(item, quantity);
-    setIsAdded(true);
-    setTimeout(() => setIsAdded(false), 2000);
+    // Immediately go back to menu so user can see the highlighted cart button
+    navigate('/menu');
   };
 
   if (loading) return (

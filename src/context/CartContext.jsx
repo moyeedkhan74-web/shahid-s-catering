@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect, useCallback, useRef } from 'react';
 
 const CartContext = createContext();
 
@@ -11,13 +11,15 @@ export const CartProvider = ({ children }) => {
   
   const [menuCache, setMenuCache] = useState([]);
   const [lastFetch, setLastFetch] = useState(0);
+  const [cartJustUpdated, setCartJustUpdated] = useState(false);
+  const cartUpdateTimer = useRef(null);
 
   // Persistence
   useEffect(() => {
     localStorage.setItem('deccan_cart', JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const addToCart = (item, quantity = 1) => {
+  const addToCart = useCallback((item, quantity = 1) => {
     setCartItems(prev => ({
       ...prev,
       [item.id]: {
@@ -25,7 +27,11 @@ export const CartProvider = ({ children }) => {
         quantity: (prev[item.id]?.quantity || 0) + quantity
       }
     }));
-  };
+    // Signal that cart was just updated (for highlight animation)
+    if (cartUpdateTimer.current) clearTimeout(cartUpdateTimer.current);
+    setCartJustUpdated(true);
+    cartUpdateTimer.current = setTimeout(() => setCartJustUpdated(false), 3000);
+  }, []);
 
   const updateQuantity = (id, quantity) => {
     if (quantity <= 0) {
@@ -82,7 +88,9 @@ export const CartProvider = ({ children }) => {
       menuCache,
       setMenuCache,
       lastFetch,
-      setLastFetch
+      setLastFetch,
+      cartJustUpdated,
+      setCartJustUpdated
     }}>
       {children}
     </CartContext.Provider>

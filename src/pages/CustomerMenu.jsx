@@ -11,7 +11,7 @@ const CustomerMenu = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [menuItems, setMenuItems] = useState([]);
-  const { menuCache, setMenuCache, lastFetch, setLastFetch, cartCount } = useCart();
+  const { menuCache, setMenuCache, lastFetch, setLastFetch, cartCount, cartJustUpdated, setCartJustUpdated } = useCart();
   const [isAdmin, setIsAdmin] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -218,13 +218,28 @@ const CustomerMenu = () => {
         {/* Floating Cart Button */}
         {cartCount > 0 && (
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] w-full max-w-md px-6">
-             <button 
-               onClick={() => navigate('/cart')}
-               className="w-full bg-[#2C1E0F] text-[#B8860B] py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] shadow-[0_20px_50px_rgba(44,30,15,0.4)] flex items-center justify-center gap-4 border-2 border-[#B8860B]/20 active:scale-95 transition-all"
+             <motion.button 
+               onClick={() => { setCartJustUpdated(false); navigate('/cart'); }}
+               animate={cartJustUpdated ? {
+                 scale: [1, 1.06, 1, 1.04, 1],
+                 boxShadow: [
+                   '0 20px 50px rgba(44,30,15,0.4)',
+                   '0 0 30px rgba(184,134,11,0.8), 0 0 60px rgba(184,134,11,0.4)',
+                   '0 20px 50px rgba(44,30,15,0.4)',
+                   '0 0 30px rgba(184,134,11,0.8), 0 0 60px rgba(184,134,11,0.4)',
+                   '0 20px 50px rgba(44,30,15,0.4)',
+                 ]
+               } : {}}
+               transition={cartJustUpdated ? { duration: 1.5, repeat: Infinity, ease: 'easeInOut' } : {}}
+               className={`w-full py-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.3em] flex items-center justify-center gap-4 border-2 active:scale-95 transition-colors duration-300 ${
+                 cartJustUpdated 
+                   ? 'bg-[#B8860B] text-white border-[#B8860B] ring-4 ring-[#B8860B]/30' 
+                   : 'bg-[#2C1E0F] text-[#B8860B] border-[#B8860B]/20 shadow-[0_20px_50px_rgba(44,30,15,0.4)]'
+               }`}
              >
                 <ShoppingBag className="w-4 h-4" />
-                View Cart ({cartCount} {cartCount === 1 ? 'Item' : 'Items'})
-             </button>
+                {cartJustUpdated ? `Item Added! View Cart (${cartCount})` : `View Cart (${cartCount} ${cartCount === 1 ? 'Item' : 'Items'})`}
+             </motion.button>
           </div>
         )}
 
